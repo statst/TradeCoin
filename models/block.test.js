@@ -58,8 +58,6 @@ describe('mineBlock()', ()=> {
         data
           )
         );
-    });
-
-  
+    }); 
   });
 });
