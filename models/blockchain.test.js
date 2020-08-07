@@ -88,10 +88,6 @@ describe('Blockchain', () => {
 					expect(blockchain.chain).toEqual(newChain.chain);
                 });
             });
-
         });
-
-    
-
     })
 });
