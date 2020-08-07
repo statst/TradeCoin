@@ -4,12 +4,13 @@ const blockchain = new Blockchain();
 
 blockchain.addBlock({ data: 'initial'})
 
+// console.log('first block', blockchain.chain[blockchain.chain.length - 1]);
+
 let prevTimestamp, nextTimestamp, nextBlock, timeDff, average;
 
 const times = [];
 
 //calculate average
-
 for (let i=0; i< 1000; i++){
     prevTimestamp = blockchain.chain[blockchain.chain.length - 1].timestamp;
     blockchain.addBlock({data: `block ${i}`});
@@ -18,7 +19,7 @@ for (let i=0; i< 1000; i++){
     timeDiff = nextTimestamp - prevTimestamp;
     times.push(timeDiff);
 
-    average = time.reduce((total, num) => {
-        (total + num)/times.length
+    average = times.reduce((total, num) => {
+        (total + num)/times.length;
     })
 }
