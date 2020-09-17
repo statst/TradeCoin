@@ -10,4 +10,6 @@ const GENESIS_DATA = {
     data:[]
 };
 
-module.exports = { GENESIS_DATA, mine_rate};
+const STARTING_BALANCE = 1000;
+
+module.exports = { GENESIS_DATA, mine_rate, STARTING_BALANCE};
