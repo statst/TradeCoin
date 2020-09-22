@@ -7,7 +7,7 @@ describe('Transaction', () =>{
     beforeEach(()=> {
         senderWallet = new Wallet();
         recipient = 'recipient-public-key';
-        amount = 50;
+        amount = 10;
         transaction = new Transaction({ senderWallet, recipient, amount });
     });
 
