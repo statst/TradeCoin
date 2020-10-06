@@ -28,7 +28,8 @@ describe('Transaction', () =>{
         it('outputs the remaining balance for the `senderWallet`', () =>{
             expect(transaction.outputMap[senderWallet.publicKey]).toEqual(senderWallet.balance - amount);
         })
-    })
+    });
+
     describe('input', () => {
         it('has an `input`', () => {
             expect(transaction).toHaveProperty('input');
@@ -49,11 +50,11 @@ describe('Transaction', () =>{
         it('signs the input', () => {
             expect(
             verifySignature({
-                publicKey: senderWallet,
+                publicKey: senderWallet.publicKey,
                 data: transaction.outputMap,
                 signature: transaction.input.signature
             })
         ).toBe(true)
         })
     });
-})
+});
