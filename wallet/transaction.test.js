@@ -59,11 +59,6 @@ describe('Transaction', () =>{
     });
 
     describe('validTransaction()', () => {
-        let errorMock;
-        beforeEach(()=>{
-            errorMock = jest.fn();
-            global.console.error = errorMock;
-        })
         describe('when the transaction is valid', () => {
             it('returns true', () => {
                 expect(Transaction.validTransaction(transaction)).toBe(true);
@@ -76,7 +71,6 @@ describe('Transaction', () =>{
                     transaction.outputMap[senderWallet.publicKey] = 55545;
 
                     expect(Transaction.validTransaction(transaction)).toBe(false);
-                    expect(errorMock).toHaveBeenCalled();
                 });
             });
 
