@@ -1,7 +1,7 @@
 const cryptoHash = require('./crypto-hash');
 
 describe('cryptoHash()', () =>{
-    it('generates a SHA- 256 hashed output', () =>{
+    it('generates a SHA-256 hashed output', () =>{
         expect(cryptoHash('value'))
         .toEqual("a0b7821a11db531982044ca5ca2e788e2d749d6b696cd3aa4172342f584f2ee1")
 
