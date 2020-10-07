@@ -1,4 +1,4 @@
-const TransactionPool = require('./transaction-pool');
+const TransactionPool = require('./transactionPool');
 const Transaction= require('./transaction');
 const Wallet = require('./index');
 
@@ -7,7 +7,7 @@ describe('TransactionPool', () => {
 
     beforeEach(() =>{
         transactionPool = new TransactionPool();
-        transaction = new transaction({
+        transaction = new Transaction({
             senderWallet: new Wallet(),
             recipient: 'fake-recipient',
             amount: 80
