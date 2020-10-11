@@ -6,9 +6,10 @@ const CHANNELS = {
     TRANSACTION: 'TRANSACTION'
 }
 class PubSub{
-    constructor({blockchain, transactionPool}){
+    constructor({blockchain, transactionPool, wallet}){
         this.blockchain = blockchain;
         this.transactionPool = transactionPool;
+        this.wallet = wallet;
         this.publisher = redis.createClient();
 		this.subscriber = redis.createClient();
         this.subscribeToChannels();
@@ -27,7 +28,11 @@ class PubSub{
                     this.blockchain.replaceChain(parsedMessage);
                     break;
                 case CHANNELS.TRANSACTION:
+                    if (!this.transactionPool.existingTransaction({
+                        inputAddress: this.wallet.publicKey
+                    })) {
                     this.transactionPool.setTransaction(parsedMessage);
+                    }
                     break;
                 default:
                     return;
