@@ -18,4 +18,4 @@ const REWARD_INPUT = {
 
 const MINING_REWARD = 50;
 
-module.exports = { GENESIS_DATA, mine_rate, STARTING_BALANCE, MINING_REWARD };
+module.exports = { GENESIS_DATA, mine_rate, STARTING_BALANCE, REWARD_INPUT, MINING_REWARD };
