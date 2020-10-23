@@ -119,14 +119,14 @@ describe('Blockchain', () => {
 
 		describe('when the new chain is longer', () => {
 			beforeEach(() => {
-				newChain.addBlock({ data: 'Bears' });
-				newChain.addBlock({ data: 'Beets' });
-				newChain.addBlock({ data: 'Battlestar Galactica' });
+				newChain.addBlock({ data: 'Foo' });
+				newChain.addBlock({ data: 'Bar' });
+				newChain.addBlock({ data: 'Foo Bar' });
 			});
 
 			describe('and the chain is invalid', () => {
 				beforeEach(() => {
-					newChain.chain[2].hash = 'some-fake-hash';
+					newChain.chain[2].hash = 'hash-value';
 
 					blockchain.replaceChain(newChain.chain);
 				});
@@ -226,11 +226,11 @@ describe('Blockchain', () => {
 
 		describe('and the transaction data has at least one malformed input', () => {
 			it('returns false and logs an error', () => {
-				wallet.balance = 9000;
+				wallet.balance = 88888;
 
 				const evilOutputMap = {
-					[wallet.publicKey]: 8900,
-					fooRecipient: 100,
+					[wallet.publicKey]: 7777,
+					fooRecipient: 80,
 				};
 
 				const evilTransaction = {
