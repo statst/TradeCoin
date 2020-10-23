@@ -199,7 +199,6 @@ describe('Transaction', () => {
 			});
 		});
 	});
-<<<<<<< HEAD
 
 	describe('rewardTransaction()', () => { 
 		let rewardTransaction, minerWallet;
@@ -217,6 +216,3 @@ describe('Transaction', () => {
 		});
 	})
 });
-=======
-});
->>>>>>> master
