@@ -1,53 +1,87 @@
 const Block = require('./block');
-const { cryptoHash }= require('../util')
+const Transaction = require('../wallet/transaction')
+const { cryptoHash }= require('../util');
+const { REWARD_INPUT, MINING_REWARD } = require('../config');
+class Blockchain {
+	constructor() {
+		this.chain = [Block.genesis()];
+	}
+	addBlock({ data }) {
+		const newBlock = Block.mineBlock({
+			lastBlock: this.chain[this.chain.length - 1],
+			data,
+		});
+		this.chain.push(newBlock);
+	}
 
-class Blockchain{
-    constructor(){
-        this.chain = [Block.genesis()];
-    }
-    addBlock({ data }){
-        const newBlock = Block.mineBlock({
-            lastBlock: this.chain[this.chain.length -1],
-            data
-        });
-        this.chain.push(newBlock);
-    }
+	replaceChain(chain, onSuccess) {
+		if (chain.length <= this.chain.length) {
+			return;
+		}
+		if (!Blockchain.isValidChain(chain)) {
+			return;
+		}
+        if(onSuccess) onSuccess();
+		this.chain = chain;
+	}
 
-    replaceChain(chain){
-        if(chain.length <= this.chain.length){
-            return;
-        }
-        if(!Blockchain.isValidChain(chain)){
-            return;
-        }
+	validTransactionData({chain}){
+		for(let i =1; i< chain.length; i++){
+			const block = chain[i];
+			let rewardTransactionCount = 0;
 
-        this.chain = chain;
-    }
+			for(let transaction of block.data){
+				if(transaction.input.address = REWARD_INPUT.address){
+					rewardTransactionCount += 1;
 
-    static isValidChain(chain){
-        if (JSON.stringify(chain[0]) !== JSON.stringify(Block.genesis())){
-            return false;
-        }  
+					if(rewardTransactionCount > 1){
+						console.error('Miner rewards exceed limit');
+						return false;
+					}
 
-        for(let i = 1; i< chain.length; i++){
-            const block = chain[i];
-            const actualLastHash = chain[i-1].hash;
-            const lastDifficulty = chain[i-1].difficulty;
-            const { timestamp, lastHash, hash, nonce, difficulty, data } = block;
+					if(Object.values(transaction.outputMap)[0] !== MINING_REWARD){
+						console.error('Miner reward amount is invalid');
+						return false;
+					}
+				} else {
+					if(!Transaction.validTransaction(transaction)){
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+	static isValidChain(chain) {
+		if (JSON.stringify(chain[0]) !== JSON.stringify(Block.genesis())) {
+			return false;
+		}
 
-            if(lastHash !== actualLastHash){
-                return false;
-            }
-            const validatedHash = cryptoHash(timestamp, lastHash, data, nonce, difficulty)
-            if (hash!== validatedHash){
-                return false;
-            }
-            if (Math.abs(lastDifficulty - difficulty) > 1){
-                return false;
-            }
-        }
-        return true;
-    }
+		for (let i = 1; i < chain.length; i++) {
+			const block = chain[i];
+			const actualLastHash = chain[i - 1].hash;
+			const lastDifficulty = chain[i - 1].difficulty;
+			const { timestamp, lastHash, hash, nonce, difficulty, data } = block;
+
+			if (lastHash !== actualLastHash) {
+				return false;
+			}
+			const validatedHash = cryptoHash(
+				timestamp,
+				lastHash,
+				data,
+				nonce,
+				difficulty
+			);
+			if (hash !== validatedHash) {
+				return false;
+			}
+			if (Math.abs(lastDifficulty - difficulty) > 1) {
+				return false;
+			}
+		}
+		return true;
+	}
 }
 
 module.exports = Blockchain;

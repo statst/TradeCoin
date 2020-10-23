@@ -1,6 +1,8 @@
 const Block = require('./block');
 const Blockchain = require('.');
 const cryptoHash = require('../util/crypto-hash');
+const Wallet = require('../wallet');
+const Transaction = require('../wallet/transaction');
 
 describe('Blockchain', () => {
 	let blockchain;
@@ -104,6 +106,55 @@ describe('Blockchain', () => {
 					expect(blockchain.chain).toEqual(newChain.chain);
                 });
             });
-        });
+		});
+		describe('validTransactionData()', () => {
+			let transaction, rewardTransaction, wallet;
+			beforeEach(() =>{
+				wallet = new Wallet();
+				transaction = wallet.createTransaction({ recipient: 'any-address', amount: 70});
+				rewardTransaction = Transaction.rewardTransaction({minerWallet: wallet})
+			})
+			describe('and the transaction data is valid', () => {
+				it('return true', () => {
+					newChain.addBlock({data: [transaction, rewardTransaction]});
+
+					expect(blockchain.validTransactionData({chain: newChain.chain})).toBe(true);
+				})
+			})
+			describe('and the transaction data has multiple rewards', () => {
+				it('returns false', () => {
+					newChain.addBlock({data: [transaction, rewardTransaction, rewardTransaction]})
+					expect(blockchain.validTransactionData({chain: newChain.chain})).toBe(false);
+				})
+			})
+		})
+		describe('and the transaction data has at least one malformed outputMap', () => {
+			describe('and the transaction is not a reward transaction', () =>{
+				it('returns false', () => {
+					transaction.outputMap[wallet.publicKey] = 888888;
+
+					newChain.addBlock({data: [transaction, rewardTransaction]});
+
+					expect(blockchain.validTransactionData({chain: newChain.chain})).toBe(false);
+				});
+			})
+			describe('and the transaction is a reward transaction', () =>{
+				it('returns false', () => {});
+			})
+		})
+		describe('and the transaction data has at least one malformed input', () => {
+			it('returns false', () => {
+				rewardTransaction.outputMap[wallet.publicKey] = 999999;
+
+					newChain.addBlock({ data: [transaction, rewardTransaction] });
+
+					expect(
+						blockchain.validTransactionData({ chain: newChain.chain })
+					).toBe(false);
+			});
+		});
+		describe('and a block contains multiple identical transactions', () => {
+			it('returns false', () => {});
+		});
     })
 });

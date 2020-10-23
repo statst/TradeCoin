@@ -1,7 +1,7 @@
 const Transaction = require('./transaction');
 const Wallet = require('./index');
 const { verifySignature } = require('../util');
-
+const { REWARD_INPUT, MINING_REWARD } = require('../config');
 describe('Transaction', () => {
 	let transaction, senderWallet, recipient, amount;
 
@@ -92,6 +92,14 @@ describe('Transaction', () => {
 	});
 
 	describe('validTransaction()', () => {
+		let errorMock;
+
+		beforeEach(() => {
+			errorMock = jest.fn();
+
+			global.console.error = errorMock;
+		});
+
 		describe('when the transaction is valid', () => {
 			it('returns true', () => {
 				expect(Transaction.validTransaction(transaction)).toBe(true);
@@ -102,7 +110,6 @@ describe('Transaction', () => {
 			describe('and a transaction outputMap value is invalid', () => {
 				it('return false and logs an error', () => {
 					transaction.outputMap[senderWallet.publicKey] = 55545;
-
 					expect(Transaction.validTransaction(transaction)).toBe(false);
 				});
 			});
@@ -192,4 +199,24 @@ describe('Transaction', () => {
 			});
 		});
 	});
+<<<<<<< HEAD
+
+	describe('rewardTransaction()', () => { 
+		let rewardTransaction, minerWallet;
+		beforeEach(() => {
+			minerWallet = new Wallet();
+			rewardTransaction = Transaction.rewardTransaction({ minerWallet });
+		});
+
+		it('creates a transaction with the reward input', () => {
+			expect(rewardTransaction.input).toEqual(REWARD_INPUT);
+		});
+
+		it('creates ones transaction for the miner with `MINING_REWARD`', () => {
+			expect(rewardTransaction.outputMap[minerWallet.publicKey]).toEqual(MINING_REWARD);
+		});
+	})
 });
+=======
+});
+>>>>>>> master
