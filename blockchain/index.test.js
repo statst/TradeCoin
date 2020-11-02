@@ -228,22 +228,22 @@ describe('Blockchain', () => {
 			it('returns false and logs an error', () => {
 				wallet.balance = 88888;
 
-				const evilOutputMap = {
+				const someOutputMap = {
 					[wallet.publicKey]: 7777,
 					fooRecipient: 80,
 				};
 
-				const evilTransaction = {
+				const someTransaction = {
 					input: {
 						timestamp: Date.now(),
 						amount: wallet.balance,
 						address: wallet.publicKey,
-						signature: wallet.sign(evilOutputMap),
+						signature: wallet.sign(someOutputMap),
 					},
-					outputMap: evilOutputMap,
+					outputMap: someOutputMap,
 				};
 
-				newChain.addBlock({ data: [evilTransaction, rewardTransaction] });
+				newChain.addBlock({ data: [someTransaction, rewardTransaction] });
 
 				expect(blockchain.validTransactionData({ chain: newChain.chain })).toBe(
 					false
